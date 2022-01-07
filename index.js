@@ -5,13 +5,14 @@ let instance = new Vue({
         b: [1,0,4]
     },
     render () {
-        console.log('触发并打印了：', this.a)
+        console.log('触发并打印了a：', this.a)
+        // console.log('触发并打印了b：', this.b)
     }
 })
 
 // instance.a = 2
 // instance.a = 3
 // instance.a = 4
-console.log(instance.b)
 instance.b.push(9)
-console.log(instance.b)
+instance.b.push(10)
+instance.a = 3

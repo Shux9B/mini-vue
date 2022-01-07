@@ -2,9 +2,10 @@ import Dep from "./Dep.js"
 
 const ArrayFunc = ['push', 'shift', 'pop', 'unshift', 'reverse', 'sort', 'splice']
 export default class {
-    #dep = new Dep()
+    #dep = {}
     constructor(target) {
         for (let k in target) {
+            this.#dep[k] = new Dep()
             let initVal = target[k]
             if (Array.isArray(initVal)) {
                 this.#reactiveArray(k, initVal)
@@ -18,13 +19,14 @@ export default class {
         const vm = this
         Object.defineProperty(vm, key, {
             get() {
-                vm.#dep.depend()
+                console.log(`依赖收集${key}`)
+                vm.#dep[key].depend()
                 return initVal
             },
             set(val) {
                 if (initVal !== val) {
                     initVal = val
-                    vm.#dep.notify()
+                    vm.#dep[key].notify()
                 }
             }
         })
@@ -36,23 +38,21 @@ export default class {
         ArrayFunc.forEach(funName => {
             obj[funName] = function ()  {
                 Array.prototype[funName].call(this, ...arguments)
-                console.log(`拦截方法${funName}成功了`)
-                vm.#dep.notify()
+                vm.#dep[key].notify()
             }
         })
         let t = Object.create(obj)
         initVal.forEach(val => t.push(val))
         initVal = t
-        // initVal = 
         Object.defineProperty(vm, key, {
             get() {
-                vm.#dep.depend()
+                vm.#dep[key].depend()
                 return initVal
             },
             set(val) {
                 if (initVal !== val) {
                     initVal = val
-                    vm.#dep.notify()
+                    vm.#dep[key].notify()
                 }
             }
         })
