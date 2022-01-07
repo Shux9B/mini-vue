@@ -1,4 +1,4 @@
-import Vue from "./Vue.js"
+import Vue from "../Vue.js"
 let instance = new Vue({
     data: {
         a: 1,
