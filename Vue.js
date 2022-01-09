@@ -1,16 +1,16 @@
 import Watcher from "./libs/core/Watcher.js";
 import Observer from "./libs/core/Observer.js";
-// import Mixins from "./libs/Mixins.js"
 export default class {
     constructor (options) {
         const vm = this
         this.$options = options
-        this.#init()
+        this.__init()
        
     }
-    #init() {
-        this.#initState()
+    __init() {
+        this.__initState()
         new Watcher(this.$options.render.bind(this))
+        this.$mount(this.$options.el)
         // 判断是否是根节点
         // if(this.$options.el) {
 
@@ -36,7 +36,7 @@ export default class {
         // new Watcher(render.bind(this))
         // return obs
     }
-    #initState () {
+    __initState () {
         const vm = this
         let data = this.$options.data
         data = typeof data === 'function' ? data.call(this) : data
@@ -52,5 +52,17 @@ export default class {
             })
         }
         // new Watcher(data)
+    }
+    $mount (el) {
+        const vm = this
+        el = document.querySelector(el)
+        vm.$el = el
+        if (!vm.$options.render) {
+            let template = vm.$options.template;
+            if (!template) {
+                // 外部包裹el
+                console.log(el.outterHTML)
+            }
+        }
     }
 }
