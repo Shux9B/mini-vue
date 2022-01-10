@@ -1,5 +1,6 @@
 import Watcher from "./core/Watcher"
 import {createElement, createText} from './VirtualDOM'
+import { patch } from "./Patch"
 export function lisfeCycleMixin(Vue) {
     Vue._v = function () {
         return createText(this, arguments)
@@ -18,8 +19,7 @@ export function lisfeCycleMixin(Vue) {
  */
 export function mountComponent(vm, el) {
     const render = vm.$options.render
-    let vnode = render.call(vm)
-    debugger
-    vm.$el.appendChild(vnode)
+    let vnode = render.call(vm, vm._t)
+    vm.$el = patch(vm.$el, vnode)
     // new Watcher()
 }

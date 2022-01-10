@@ -12,9 +12,10 @@ export default class {
     __init() {
         this.__initMixins()
         this.__initState()
-        // new Watcher(this.$options.render.bind(this))
+        
         // 判断是否是根节点
         if (this.$options.el) {
+
             this.$el = document.querySelector(this.$options.el)
             this.$mount(this.$el)
         } else {

@@ -4,12 +4,14 @@
     <script src="../dist/Vue.js"></script>
     <script>
         new Vue({
+            el: "#app",
             data: {
                 a: 1,
                 b: [1, 0, 4]
             },
-            render() {
+            render(h) {
                 console.log('触发并打印了a：', this.a)
+                return h('div',{}, [h('span', {}, `打印a:${this.a}`), `打印b:${this.b}`])
             }
         })
     </script>
