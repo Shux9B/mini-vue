@@ -1,21 +1,25 @@
 import Watcher from "./libs/core/Watcher.js";
 import Observer from "./libs/core/Observer.js";
+import { compile2Func } from './libs/VirtualDOM.js'
+import { mountComponent, lisfeCycleMixin } from "./libs/LifeCycle.js";
 export default class {
-    constructor (options) {
+    constructor(options) {
         const vm = this
         this.$options = options
         this.__init()
-       
+
     }
     __init() {
+        this.__initMixins()
         this.__initState()
-        new Watcher(this.$options.render.bind(this))
-        this.$mount(this.$options.el)
+        // new Watcher(this.$options.render.bind(this))
         // 判断是否是根节点
-        // if(this.$options.el) {
-
-        // }
-        
+        if (this.$options.el) {
+            this.$el = document.querySelector(this.$options.el)
+            this.$mount(this.$el)
+        } else {
+            this.$mount()
+        }
         // new initListener()
         // new InitLifeCycle()
         // this.beforeCreated()
@@ -36,33 +40,36 @@ export default class {
         // new Watcher(render.bind(this))
         // return obs
     }
-    __initState () {
+    __initState() {
         const vm = this
-        let data = this.$options.data
-        data = typeof data === 'function' ? data.call(this) : data
+        let data = vm.$options.data
+        data = typeof data === 'function' ? data.call(vm) : data
         data = new Observer(data)
-        for(let dataKey of Object.getOwnPropertyNames(data)) {
-            Object.defineProperty(this, dataKey, {
-                get () {
+        for (let dataKey of Object.getOwnPropertyNames(data)) {
+            Object.defineProperty(vm, dataKey, {
+                get() {
                     return data[dataKey]
                 },
-                set (val) {
+                set(val) {
                     data[dataKey] = val
                 }
             })
         }
         // new Watcher(data)
     }
-    $mount (el) {
+    $mount(el) {
         const vm = this
-        el = document.querySelector(el)
-        vm.$el = el
-        if (!vm.$options.render) {
-            let template = vm.$options.template;
-            if (!template) {
+        const opts = vm.$options
+        if (!opts.render) {
+            if (!opts.template) {
                 // 外部包裹el
-                console.log(el.outterHTML)
+                opts.template = el.outerHTML
             }
+            opts.render = compile2Func(opts.template, opts)
         }
+        mountComponent(vm, el)
+    }
+    __initMixins () {
+        lisfeCycleMixin(this)
     }
 }

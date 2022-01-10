@@ -10,8 +10,8 @@
 1. Watcher          √
 2. Observer         √
 3. Dep              √
-4. Virtual DOM转换  ing
-5. Dom diff         X
+4. Virtual DOM转换  √
+5. Dom diff         ing
 6. Hooks            X
 7. Mixins           X
 8. Plugin           X
