@@ -12,9 +12,12 @@
 3. Dep              √
 4. Virtual DOM转换  √
 5. Dom diff         ing
+6. event            √
 6. Hooks            X
 7. Mixins           X
 8. Plugin           X
 
+### 待解决问题
+1. 目前diff直接比较的真实DOM，应该比对虚拟DOM
 #### 实现疑问
 1. 如果全部通过一个data实现，是不是任何子属性改变其他的都要重新收集依赖？这块在源码中有什么优化么？

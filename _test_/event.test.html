@@ -1,0 +1,30 @@
+<html>
+
+<body>
+    <div id="app" key="app" style="widht:100px" class="hi">
+        <div>
+            <input type="button" @click="handleClick" value="点击加一"/>
+            <span>{{a}}</span>
+        </div>
+    </div>
+    <script src="../dist/Vue.js"></script>
+    <script>
+        var instance = new Vue({
+            el: "#app",
+            data: {
+                a: 1,
+                b: [1, 0, 4]
+            },
+            methods: {
+                handleClick() {
+                    this.a = this.a + 1
+                }
+            }
+        })
+        setTimeout(function () {
+            instance.a = 2
+        }, 1500)
+    </script>
+</body>
+
+</html>

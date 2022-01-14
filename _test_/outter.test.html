@@ -1,6 +1,8 @@
 <html>
+
 <body>
-    <div id="app" key="app" style="widht:100px" class="hi"><span>33333<a style="color:red">44444{{a}}</a></a></span>{{b}}123{{a}}</div>
+    <div id="app" key="app" style="widht:100px" class="hi"><span>33333<a
+                style="color:red">44444{{a}}</a></span>{{b}}123{{a}}</div>
     <script src="../dist/Vue.js"></script>
     <script>
         var instance = new Vue({
@@ -10,9 +12,9 @@
                 b: [1, 0, 4]
             },
         })
-        setTimeout(function(){
+        setTimeout(function () {
             instance.a = 2
-        },1500)
+        }, 1500)
     </script>
 </body>
 
