@@ -12,34 +12,15 @@ export default class {
     __init() {
         this.__initMixins()
         this.__initState()
-        
+        this.__initListener()
         // 判断是否是根节点
         if (this.$options.el) {
-
             this.$el = document.querySelector(this.$options.el)
-            this.$mount(this.$el)
+            new Watcher(this.$mount.bind(this, this.$el))
         } else {
-            this.$mount()
+            // this.$mount()
+            new Watcher(this.$mount)
         }
-        // new initListener()
-        // new InitLifeCycle()
-        // this.beforeCreated()
-        // new InitState()
-        // this.beforeCreated()
-        // if (el) {
-        //     // 是用来挂载的Root节点
-        //     this.$root = null
-        // }
-        // const componentRender = InitRender(render || template)
-        // this.beforeMount()
-
-
-
-
-        // if (created) {
-        //  }
-        // new Watcher(render.bind(this))
-        // return obs
     }
     __initState() {
         const vm = this
@@ -70,7 +51,21 @@ export default class {
         }
         mountComponent(vm, el)
     }
-    __initMixins () {
+    __initMixins() {
         lisfeCycleMixin(this)
+    }
+    __initListener() {
+        this.$on = new WeakMap()
+        const vm = this
+        const methods = vm.$options.methods
+        if (methods) {
+            for (let methodsKey of Object.getOwnPropertyNames(methods)) {
+                Object.defineProperty(vm, methodsKey, {
+                    get() {
+                        return methods[methodsKey]
+                    }
+                })
+            }
+        }
     }
 }

@@ -1,28 +1,30 @@
 export function patch(oldVnode, vnode) {
     // 查看是否是虚拟元素
-    const isRealElement = oldVnode.parentNode
-    if (isRealElement) {
-        const oldElm = oldVnode
-        const parentNode = oldVnode.parentNode
-        parentNode.insertBefore(vnode, oldElm.nextSibling)
-        parentNode.removeChild(oldElm)
-        return vnode
-    } else {
-        console.log(this)
-        return vnode
-        // diff算法
-    }
-    // updateProps(oldVnode, vnode)
-    // diffChildren(oldVnode, vnode)
+    // const isRealElement = oldVnode.parentNode
+    // if (isRealElement) {
+    //     const oldElm = oldVnode
+    //     const parentNode = oldVnode.parentNode
+    //     parentNode.insertBefore(vnode, oldElm.nextSibling)
+    //     parentNode.removeChild(oldElm)
+    //     return vnode
+    // } else {
+    //     console.log(this)
+    //     return vnode
+    //     // diff算法
+    // }
+    // 
+    diffChildren(oldVnode, vnode)
+    return oldVnode
+    
 }
 function diffSimple(oldNode, newNode) {
     // 类型不同
-    if (oldNode.type !== newNode.type) {
+    if (oldNode.nodeType !== newNode.nodeType) {
         return oldNode.parentNode.replaceChild(newNode, oldNode)
     }
     // 类型一样，文本不一样
-    if (oldNode.text) {
-        return oldNode.textContent = newNode.text
+    if (oldNode.innerText !== newNode.innerText) {
+        return oldNode.textContent = newNode.textContent
     }
     // 类型一样，并且是标签，需要根据新节点属性更新老节点属性
     return updateProps(oldNode, newNode)
@@ -31,14 +33,15 @@ const needUpdateKey = ['style', 'className', 'id', 'type']
 function updateProps(oldNode, newNode) {
     for(let key in needUpdateKey) {
         const prop = newNode[key]
-        if (typeof newProp === 'object') {
-            for (let key in newProp) {
-                updateProps(oldProp[key], newProp[key])
+        if (typeof prop === 'object') {
+            for (let key in prop) {
+                updateProps(oldProp[key], prop)
             }
         } else {
             oldNode[key] = newNode[key]
         }
     }
+    return oldNode
 }
 function diffChildren(oldNode, newNode) {
     const newChildren = newNode.children
@@ -64,7 +67,7 @@ function createMapByIndex (oldChildren) {
     for (let i = 0; i< oldChildren.length; i++) {
         let current = oldChildren[i]
         if (current.key) {
-            map[current.key] = i
+            map[current.key] = oldChildren[i]
         }
     }
     return map
@@ -88,6 +91,7 @@ function updateChildren(parent, oldChildren,newChildren) {
         } else if (!oldEndNode) {
             oldEndNode = oldChildren[--newEndIndex]
         } else if (isSameNode(oldStartNode, newStartNode)) {
+            
             diffSimple(oldStartNode, newStartNode)
             oldStartNode = oldChildren[++oldStartIndex]
             newStartNode = newChildren[++newStartIndex]
