@@ -12,9 +12,9 @@
             },
             render(h) {
                 console.log('触发并打印了a：', this.a)
-                return h('div', {}, this.b.map(num => {
-                    return h('h1', { key: `num-${num}`}, `${num}`)
-                }))
+                return h('div', {}, [...this.b.map(num => {
+                    return h('h1', { key: `num-${num}` }, `${num}`)
+                }), h('h1', {}, `${this.b}`)])
             }
         })
         setTimeout(function () {

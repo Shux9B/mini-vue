@@ -67,13 +67,17 @@ function createMapByIndex (oldChildren) {
     for (let i = 0; i< oldChildren.length; i++) {
         let current = oldChildren[i]
         if (current.key) {
-            map[current.key] = oldChildren[i]
+            map[current.key] = current
+        } else {
+            map[i] = current
         }
     }
     return map
 }
 function updateChildren(parent, oldChildren,newChildren) {
     // 获取老的标识
+    oldChildren = Array.from(oldChildren)
+    newChildren = Array.from(newChildren)
     let oldStartIndex = 0
     let oldStartNode = oldChildren[oldStartIndex]
     let oldEndIndex = oldChildren.length - 1
@@ -91,7 +95,6 @@ function updateChildren(parent, oldChildren,newChildren) {
         } else if (!oldEndNode) {
             oldEndNode = oldChildren[--newEndIndex]
         } else if (isSameNode(oldStartNode, newStartNode)) {
-            
             diffSimple(oldStartNode, newStartNode)
             oldStartNode = oldChildren[++oldStartIndex]
             newStartNode = newChildren[++newStartIndex]
@@ -110,17 +113,18 @@ function updateChildren(parent, oldChildren,newChildren) {
             oldEndNode = oldChildren[--oldEndIndex]
             newStartNode = newChildren[++newStartIndex]
         } else {
+            debugger
             // 都不一样,通过新的节点的key去找
-            let index = map[newStartNode.key]
-            if (index == null) {
+            let toMoveNode = map[newStartNode.key]
+            if (toMoveNode == null) {
                 parent.insertBefore(newStartNode, oldStartNode)
             } else {
-                let toMoveNode = oldChildren[index]
                 diffSimple(toMoveNode, newStartNode)
                 parent.insertBefore(toMoveNode, oldStartNode)
-                oldChildren[index] = void 0
+                oldChildren[newStartIndex] = void 0
             }
             newStartNode = newChildren[++newStartIndex]
+            oldStartNode = oldChildren[++oldStartIndex]
         }
     }
     if (newStartIndex <= newEndIndex) {
