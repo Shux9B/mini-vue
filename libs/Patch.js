@@ -104,12 +104,12 @@ function updateChildren(parent, oldChildren,newChildren) {
             newEndNode = newChildren[--newEndIndex]
         } else if (isSameNode(oldStartNode,newEndNode)) {
             diffSimple(oldStartNode, newEndNode)
-            parent.insertBefore(oldStartNode, oldEndNode.nextSibling)
+            mountElement(parent, oldStartNode, oldEndNode.nextSibling)
             oldStartNode = oldChildren[++oldStartIndex]
             newEndNode = newChildren[--newEndIndex]
         } else if (isSameNode(oldEndNode, newStartNode)) {
             diffSimple(oldEndNode, newStartNode)
-            parent.insertBefore(oldEndNode,oldStartNode)
+            mountElement(parent, oldEndNode, oldStartNode)
             oldEndNode = oldChildren[--oldEndIndex]
             newStartNode = newChildren[++newStartIndex]
         } else {
@@ -117,10 +117,10 @@ function updateChildren(parent, oldChildren,newChildren) {
             // 都不一样,通过新的节点的key去找
             let toMoveNode = map[newStartNode.key]
             if (toMoveNode == null) {
-                parent.insertBefore(newStartNode, oldStartNode)
+                mountElement(parent, newStartNode, oldStartNode)
             } else {
                 diffSimple(toMoveNode, newStartNode)
-                parent.insertBefore(toMoveNode, oldStartNode)
+                mountElement(parent, toMoveNode, oldStartNode)
                 oldChildren[newStartIndex] = void 0
             }
             newStartNode = newChildren[++newStartIndex]
@@ -130,7 +130,7 @@ function updateChildren(parent, oldChildren,newChildren) {
     if (newStartIndex <= newEndIndex) {
         for(let i = newStartIndex; i<=newEndIndex; i++) {
             let beforeELement = newChildren[newEndIndex + 1] == null ? null : newChildren[newEndIndex + 1]
-            parent.insertBefore(newChildren[i],beforeELement)
+            mountElement(parent, newChildren[i], beforeELement)
             // parent.appendChild(newChildren[i])
         }
     }
@@ -140,6 +140,17 @@ function updateChildren(parent, oldChildren,newChildren) {
                 parent.removeChild(oldChildren[i])
             }
         }
+    }
+}
+import { beforeMount,mounted,beforeDestoryed, destoryed } from "./LifeCycle"
+export function mountElement (vm) {
+    // 调用target的beforeDestory
+    // beforeMount(node)
+    mountElement = function (parent, target, node) {
+        vm.$beforeDestory()
+        parent.insertBefore(target,node)
+        // mounted(node)
+        vm.$destoryed()
     }
 }
 function isSameNode(oldNode, newNode) {

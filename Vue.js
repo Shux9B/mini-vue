@@ -1,7 +1,7 @@
 import Watcher from "./libs/core/Watcher.js";
 import Observer from "./libs/core/Observer.js";
 import { compile2Func } from './libs/VirtualDOM.js'
-import { mountComponent, lisfeCycleMixin } from "./libs/LifeCycle.js";
+import { mountComponent, lisfeCycleMixin, __initLifecycle } from "./libs/LifeCycle.js";
 export default class {
     constructor(options) {
         const vm = this
@@ -11,15 +11,18 @@ export default class {
     }
     __init() {
         this.__initMixins()
-        this.__initState()
         this.__initListener()
+        __initLifecycle(this)
+        // this.__beforeCreated()
+        this.__initState()
+        // this.__created()
         // 判断是否是根节点
         if (this.$options.el) {
             this.$el = document.querySelector(this.$options.el)
-            new Watcher(this.$mount.bind(this, this.$el))
+            this._watcher = new Watcher(this.$mount.bind(this, this.$el), this)
         } else {
             // this.$mount()
-            new Watcher(this.$mount)
+            this._watcher = new Watcher(this.$mount, this)
         }
     }
     __initState() {
@@ -55,7 +58,7 @@ export default class {
         lisfeCycleMixin(this)
     }
     __initListener() {
-        this.$on = new WeakMap()
+        this.$on = new Map()
         const vm = this
         const methods = vm.$options.methods
         if (methods) {

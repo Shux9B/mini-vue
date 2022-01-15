@@ -13,7 +13,11 @@
 4. Virtual DOM转换  √
 5. Dom diff         √
 6. event            √
-6. Hooks            X
+6. lifeCycle        X
+    - beforeCreate  √
+    - created       √
+    - beforeDestory √
+    - destoryed     √
 7. children         X
 8. Mixins           X
 9. Plugin           X
