@@ -4,6 +4,16 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Vue = factory());
 })(this, (function () { 'use strict';
 
+  function _typeof(obj) {
+    "@babel/helpers - typeof";
+
+    return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    }, _typeof(obj);
+  }
+
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError("Cannot call a class as a function");
@@ -44,6 +54,56 @@
     return obj;
   }
 
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+  }
+
+  function _iterableToArrayLimit(arr, i) {
+    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+    if (_i == null) return;
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+
+    var _s, _e;
+
+    try {
+      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"] != null) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
     if (typeof o === "string") return _arrayLikeToArray(o, minLen);
@@ -59,6 +119,14 @@
     for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
 
     return arr2;
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
   function _createForOfIteratorHelper(o, allowArrayLike) {
@@ -129,109 +197,6 @@
       } catch (e) {} // avoid ReferenceError: process is not defined
       globalThis.process = { env:env };
   })();
-
-  var _default$2 = /*#__PURE__*/function () {
-    function _default() {
-      _classCallCheck(this, _default);
-
-      this.listener = new Set();
-    }
-
-    _createClass(_default, [{
-      key: "depend",
-      value: function depend() {
-      }
-    }, {
-      key: "notify",
-      value: function notify() {
-        this.listener.forEach(function (fn) {
-          return fn();
-        });
-      }
-    }]);
-
-    return _default;
-  }();
-
-  var ArrayFunc = ['push', 'shift', 'pop', 'unshift', 'reverse', 'sort', 'splice'];
-
-  var _default$1 = /*#__PURE__*/function () {
-    function _default(target) {
-      _classCallCheck(this, _default);
-
-      _defineProperty(this, "__dep", {});
-
-      for (var k in target) {
-        this.__dep[k] = new _default$2();
-        var initVal = target[k];
-
-        if (Array.isArray(initVal)) {
-          this.__reactiveArray(k, initVal);
-        } else {
-          this.__reactiveCommon(k, initVal);
-        }
-      }
-    }
-
-    _createClass(_default, [{
-      key: "__reactiveCommon",
-      value: function __reactiveCommon(key, initVal) {
-        var vm = this;
-        Object.defineProperty(vm, key, {
-          get: function get() {
-            console.log("\u4F9D\u8D56\u6536\u96C6".concat(key));
-
-            vm.__dep[key].depend();
-
-            return initVal;
-          },
-          set: function set(val) {
-            if (initVal !== val) {
-              initVal = val;
-
-              vm.__dep[key].notify();
-            }
-          }
-        });
-      }
-    }, {
-      key: "__reactiveArray",
-      value: function __reactiveArray(key, initVal) {
-        var vm = this;
-        var obj = Object.create(Array.prototype);
-        ArrayFunc.forEach(function (funName) {
-          obj[funName] = function () {
-            var _Array$prototype$funN;
-
-            (_Array$prototype$funN = Array.prototype[funName]).call.apply(_Array$prototype$funN, [this].concat(Array.prototype.slice.call(arguments)));
-
-            vm.__dep[key].notify();
-          };
-        });
-        var t = Object.create(obj);
-        initVal.forEach(function (val) {
-          return t.push(val);
-        });
-        initVal = t;
-        Object.defineProperty(vm, key, {
-          get: function get() {
-            vm.__dep[key].depend();
-
-            return initVal;
-          },
-          set: function set(val) {
-            if (initVal !== val) {
-              initVal = val;
-
-              vm.__dep[key].notify();
-            }
-          }
-        });
-      }
-    }]);
-
-    return _default;
-  }();
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -9564,7 +9529,8 @@
     var doms = lib.parseDocument(template);
     console.log(doms);
     var code = genCode(doms.children[0]);
-    return new Function("with(this){return ".concat(code, "}"));
+    var t = "with(this){return ".concat(code.replace(/\"/g, "'"), "}");
+    return new Function(t);
   }
 
   function gen(node) {
@@ -9580,7 +9546,7 @@
           var endIndex = match.index;
 
           if (endIndex > startIndex) {
-            tokens.push(JSON.stringify(node.data.slice(startIndex, endIndex)));
+            tokens.push(JSON.stringify(node.data.slice(startIndex, endIndex)).trim());
           }
 
           var varTitle = match[0].trim();
@@ -9589,12 +9555,12 @@
         }
 
         if (startIndex < lib$5.textContent.length) {
-          tokens.push(JSON.stringify(node.data.slice(startIndex)));
+          tokens.push(JSON.stringify(node.data.slice(startIndex)).trim());
         }
 
         return "_v(".concat(tokens.join('+'), ")");
       } else {
-        return "_v('".concat(node.data, "')");
+        return "_v('".concat(node.data.trim(), "')");
       }
     }
   }
@@ -9610,12 +9576,18 @@
     }).join(',');
   }
 
-  var domAttrs = ['style', 'class', 'key'];
+  var domAttrs = ['style', 'class', 'key', 'id', 'type', 'value', '@click'];
   function createElement(vm, tag, attrs, children) {
     console.log(tag, attrs, children);
     var t = document.createElement(tag);
     domAttrs.forEach(function (key) {
-      t[key] = attrs[key];
+      if (key.includes("@") && attrs[key]) {
+        var handler = vm[attrs[key]].bind(vm);
+        vm.$on.set(t, handler);
+        t.addEventListener(key.replace(/@/, ''), handler);
+      } else {
+        t[key] = attrs[key];
+      }
     });
 
     if (Array.isArray(children)) {
@@ -9642,16 +9614,176 @@
 
   function patch(oldVnode, vnode) {
     // 查看是否是虚拟元素
-    var isRealElement = oldVnode.nodeType;
+    // const isRealElement = oldVnode.parentNode
+    // if (isRealElement) {
+    //     const oldElm = oldVnode
+    //     const parentNode = oldVnode.parentNode
+    //     parentNode.insertBefore(vnode, oldElm.nextSibling)
+    //     parentNode.removeChild(oldElm)
+    //     return vnode
+    // } else {
+    //     console.log(this)
+    //     return vnode
+    //     // diff算法
+    // }
+    // 
+    diffChildren(oldVnode, vnode);
+    return oldVnode;
+  }
 
-    if (isRealElement) {
-      var oldElm = oldVnode;
-      var parentNode = oldVnode.parentNode;
-      parentNode.insertBefore(vnode, oldElm.nextSibling);
-      parentNode.removeChild(oldElm);
+  function diffSimple(oldNode, newNode) {
+    // 类型不同
+    if (oldNode.nodeType !== newNode.nodeType) {
+      return oldNode.parentNode.replaceChild(newNode, oldNode);
+    } // 类型一样，文本不一样
+
+
+    if (oldNode.innerText !== newNode.innerText) {
+      return oldNode.textContent = newNode.textContent;
+    } // 类型一样，并且是标签，需要根据新节点属性更新老节点属性
+
+
+    return updateProps(oldNode, newNode);
+  }
+
+  var needUpdateKey = ['style', 'className', 'id', 'type'];
+
+  function updateProps(oldNode, newNode) {
+    for (var key in needUpdateKey) {
+      var prop = newNode[key];
+
+      if (_typeof(prop) === 'object') {
+        for (var _key in prop) {
+          updateProps(oldProp[_key], prop);
+        }
+      } else {
+        oldNode[key] = newNode[key];
+      }
     }
 
-    return vnode;
+    return oldNode;
+  }
+
+  function diffChildren(oldNode, newNode) {
+    var newChildren = newNode.children;
+    var oldChildren = oldNode.children;
+
+    if (oldChildren.length > 0 && newChildren.length > 0) {
+      // 老的有儿子，新的有儿子
+      updateChildren(oldNode, oldChildren, newChildren);
+    } else if (oldNode.children.length > 0) {
+      // 老的有儿子，新的没儿子
+      oldNode.innerHtml = '';
+    } else if (newChildren.length > 0) {
+      // 老的没儿子，新的有儿子
+      Array.from(newChildren).forEach(function (ele) {
+        oldNode.appendChild(ele);
+      });
+    } else ;
+
+    return oldNode;
+  }
+
+  function createMapByIndex(oldChildren) {
+    var map = {};
+
+    for (var i = 0; i < oldChildren.length; i++) {
+      var current = oldChildren[i];
+
+      if (current.key) {
+        map[current.key] = current;
+      } else {
+        map[i] = current;
+      }
+    }
+
+    return map;
+  }
+
+  function updateChildren(parent, oldChildren, newChildren) {
+    // 获取老的标识
+    oldChildren = Array.from(oldChildren);
+    newChildren = Array.from(newChildren);
+    var oldStartIndex = 0;
+    var oldStartNode = oldChildren[oldStartIndex];
+    var oldEndIndex = oldChildren.length - 1;
+    var oldEndNode = oldChildren[oldEndIndex];
+    var map = createMapByIndex(oldChildren); // 获取新的标识
+
+    var newStartIndex = 0;
+    var newStartNode = newChildren[newStartIndex];
+    var newEndIndex = newChildren.length - 1;
+    var newEndNode = newChildren[newEndIndex]; // 谁先结束说明，后面的均未新增
+
+    while (oldStartIndex <= oldEndIndex && newStartIndex <= newEndIndex) {
+      if (!oldStartNode) {
+        oldStartNode = oldChildren[++oldStartIndex];
+      } else if (!oldEndNode) {
+        oldEndNode = oldChildren[--newEndIndex];
+      } else if (isSameNode(oldStartNode, newStartNode)) {
+        diffSimple(oldStartNode, newStartNode);
+        oldStartNode = oldChildren[++oldStartIndex];
+        newStartNode = newChildren[++newStartIndex];
+      } else if (isSameNode(oldEndNode, newEndNode)) {
+        diffSimple(oldEndNode, newEndNode);
+        oldEndNode = oldChildren[--oldEndIndex];
+        newEndNode = newChildren[--newEndIndex];
+      } else if (isSameNode(oldStartNode, newEndNode)) {
+        diffSimple(oldStartNode, newEndNode);
+        mountElement(parent, oldStartNode, oldEndNode.nextSibling);
+        oldStartNode = oldChildren[++oldStartIndex];
+        newEndNode = newChildren[--newEndIndex];
+      } else if (isSameNode(oldEndNode, newStartNode)) {
+        diffSimple(oldEndNode, newStartNode);
+        mountElement(parent, oldEndNode, oldStartNode);
+        oldEndNode = oldChildren[--oldEndIndex];
+        newStartNode = newChildren[++newStartIndex];
+      } else {
+        // 都不一样,通过新的节点的key去找
+        var toMoveNode = map[newStartNode.key];
+
+        if (toMoveNode == null) {
+          mountElement(parent, newStartNode, oldStartNode);
+        } else {
+          diffSimple(toMoveNode, newStartNode);
+          mountElement(parent, toMoveNode, oldStartNode);
+          oldChildren[newStartIndex] = void 0;
+        }
+
+        newStartNode = newChildren[++newStartIndex];
+        oldStartNode = oldChildren[++oldStartIndex];
+      }
+    }
+
+    if (newStartIndex <= newEndIndex) {
+      for (var i = newStartIndex; i <= newEndIndex; i++) {
+        var beforeELement = newChildren[newEndIndex + 1] == null ? null : newChildren[newEndIndex + 1];
+        mountElement(parent, newChildren[i], beforeELement); // parent.appendChild(newChildren[i])
+      }
+    }
+
+    if (oldStartIndex <= oldEndIndex) {
+      for (var _i = oldStartIndex; _i <= oldEndIndex; _i++) {
+        if (oldChildren[_i]) {
+          parent.removeChild(oldChildren[_i]);
+        }
+      }
+    }
+  }
+
+  function mountElement(vm) {
+    // 调用target的beforeDestory
+    // beforeMount(node)
+    mountElement = function mountElement(parent, target, node) {
+      vm.$beforeDestory();
+      parent.insertBefore(target, node); // mounted(node)
+
+      vm.$destoryed();
+    };
+  }
+
+  function isSameNode(oldNode, newNode) {
+    return oldNode.key === newNode.key && oldNode.type === newNode.type;
   }
 
   function lisfeCycleMixin(Vue) {
@@ -9678,43 +9810,330 @@
     var vnode = render.call(vm, vm._t);
     vm.$el = patch(vm.$el, vnode); // new Watcher()
   }
+  function beforeUpdate(fn) {
+    var fun = function fun() {
+      console.log("触发了钩子：beforeUpdate");
+      fn.call(this);
+    };
 
-  var _default = /*#__PURE__*/function () {
-    function _default(options) {
+    return fun;
+  }
+  function updated(fn) {
+    var fun = function fun() {
+      console.log("触发了钩子：updated");
+      fn.call(this);
+    };
+
+    return fun;
+  }
+  function beforeDestory(fn) {
+    var fun = function fun() {
+      console.log("触发了钩子：updated");
+      fn.call(this); // 清空watcher
+
+      this._watcher = null; // 清空listener
+
+      var _iterator = _createForOfIteratorHelper(this.$on),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _step$value = _slicedToArray(_step.value, 2),
+              dom = _step$value[0],
+              listener = _step$value[1];
+
+          dom.removeEventListener(listener);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+    };
+
+    return fun;
+  }
+  function destoryed(fn) {
+    var fun = function fun() {
+      fn.call(this);
+    };
+
+    return fun;
+  }
+  function __initLifecycle(vm) {
+    if (vm.$options.updated) {
+      vm.$updated = updated(vm.$options.updated);
+    }
+
+    if (vm.$options.beforeUpdate) {
+      vm.$beforeUpdate = beforeUpdate(vm.$options.beforeUpdate);
+    }
+
+    if (vm.$options.destoryed) {
+      vm.$destoryed = destoryed(vm.$options.destoryed);
+    }
+
+    if (vm.$options.beforeDestory) {
+      vm.$beforeDestory = beforeDestory(vm.$options.beforeDestory);
+    }
+
+    mountElement(vm);
+  }
+
+  var GlobalFunc = null;
+
+  var _default$2 = /*#__PURE__*/_createClass(function _default(fn, vm) {
+    _classCallCheck(this, _default);
+
+    // 1. 通过wapperFn每次都将会重新调用fn
+    function wapperFn() {
+      // 这里是beforeUpdate
+      vm.$beforeUpdate && vm.$beforeUpdate();
+      GlobalFunc = wapperFn;
+      fn();
+      GlobalFunc = null; //这里是updated
+
+      vm.$updated && vm.$updated();
+    } // 1. 只会触发一次fn调用
+
+
+    wapperFn(); // console.log("触发了")
+    // GlobalFunc = fn
+    // fn()
+    // GlobalFunc = null
+  });
+
+  var _default$1 = /*#__PURE__*/function () {
+    function _default() {
       _classCallCheck(this, _default);
-      this.$options = options;
 
-      this.__init();
+      this.listener = new Set();
     }
 
     _createClass(_default, [{
+      key: "depend",
+      value: function depend() {
+        if (GlobalFunc) {
+          this.listener.add(GlobalFunc);
+        }
+      }
+    }, {
+      key: "notify",
+      value: function notify() {
+        this.listener.forEach(function (fn) {
+          return fn();
+        });
+      }
+    }]);
+
+    return _default;
+  }();
+
+  var ArrayFunc = ['push', 'shift', 'pop', 'unshift', 'reverse', 'sort', 'splice'];
+
+  var _default = /*#__PURE__*/function () {
+    function _default(target) {
+      _classCallCheck(this, _default);
+
+      _defineProperty(this, "__dep", {});
+
+      for (var k in target) {
+        this.__dep[k] = new _default$1();
+        var initVal = target[k];
+
+        if (Array.isArray(initVal)) {
+          this.__reactiveArray(k, initVal);
+        } else {
+          this.__reactiveCommon(k, initVal);
+        }
+      }
+    }
+
+    _createClass(_default, [{
+      key: "__reactiveCommon",
+      value: function __reactiveCommon(key, initVal) {
+        var vm = this;
+        Object.defineProperty(vm, key, {
+          get: function get() {
+            console.log("\u4F9D\u8D56\u6536\u96C6".concat(key));
+
+            vm.__dep[key].depend();
+
+            return initVal;
+          },
+          set: function set(val) {
+            if (initVal !== val) {
+              initVal = val;
+
+              vm.__dep[key].notify();
+            }
+          }
+        });
+      }
+    }, {
+      key: "__reactiveArray",
+      value: function __reactiveArray(key, initVal) {
+        var vm = this;
+        var obj = Object.create(Array.prototype);
+        ArrayFunc.forEach(function (funName) {
+          obj[funName] = function () {
+            var _Array$prototype$funN;
+
+            (_Array$prototype$funN = Array.prototype[funName]).call.apply(_Array$prototype$funN, [this].concat(Array.prototype.slice.call(arguments)));
+
+            vm.__dep[key].notify();
+          };
+        });
+        var t = Object.create(obj);
+        initVal.forEach(function (val) {
+          return t.push(val);
+        });
+        initVal = t;
+        Object.defineProperty(vm, key, {
+          get: function get() {
+            vm.__dep[key].depend();
+
+            return initVal;
+          },
+          set: function set(val) {
+            if (initVal !== val) {
+              initVal = val;
+
+              vm.__dep[key].notify();
+            }
+          }
+        });
+      }
+    }]);
+
+    return _default;
+  }();
+
+  function mixinsComponent(componentOpt) {
+    var inputMixins = componentOpt.mixins;
+
+    if (inputMixins) {
+      // 混入data
+      var optData = componentOpt.data;
+
+      if (typeof optData === 'function') {
+        // 说明不是根组件先不处理，跟children一起作
+        optData = optData();
+      } // 假定只有object和function两种类型
+
+
+      var mixinsData = inputMixins.map(function (m) {
+        return m.data && m.data();
+      });
+      mixinsData.unshift(optData);
+      componentOpt.data = mixinsData.reduce(function (previousValue, currentValue) {
+        for (var key in currentValue) {
+          if (previousValue.hasOwnProperty(key)) {
+            debugger; // 被合并也有，则merge
+
+            if (_typeof(currentValue[key]) === 'object') {
+              deepMerge(previousValue[key], currentValue[key]);
+            }
+          } else {
+            // 没有的直接赋值
+            previousValue[key] = currentValue[key];
+          }
+        }
+
+        return previousValue;
+      }, {}); // 混入Hook,组件之前调用
+
+      var mixinUpdated = inputMixins.map(function (m) {
+        return m.updated ? m.updated : function () {};
+      });
+
+      if (componentOpt.updated) {
+        // 就处理updated的混入
+        componentOpt.updated = [componentOpt.updated].concat(_toConsumableArray(mixinUpdated));
+      } else {
+        componentOpt.updated = _toConsumableArray(mixinUpdated);
+      } // 混入methods、components 和 directives,目前只处理methods
+
+
+      var mixinsMethods = inputMixins.filter(function (m) {
+        return m.methods;
+      });
+
+      if (componentOpt.methods) {
+        mixinsMethods.unshift(componentOpt.methods);
+      }
+
+      componentOpt.methods = mixinsMethods.reduce(function (previousValue, currentValue) {
+        for (var key in currentValue.methods) {
+          if (previousValue.hasOwnProperty(key)) ; else {
+            // 没有的直接赋值
+            previousValue[key] = currentValue.methods[key];
+          }
+        }
+
+        return previousValue;
+      }, {});
+    }
+  }
+
+  function deepMerge(sorce, input) {
+    if (_typeof(sorce) === _typeof(input)) {
+      // 类型相等再处理
+      if (Array.isArray(sorce) && Array.isArray(input)) {
+        // 都是数组
+        debugger;
+        sorce.push.apply(sorce, _toConsumableArray(input));
+      } else {
+        for (var key in input) {
+          if (sorce.hasOwnProperty(key)) {
+            // 被合并也有，则merge
+            if (_typeof(sorce[key]) === 'object') {
+              deepMerge(sorce[key], input[key]);
+            }
+          } else {
+            // 没有的直接赋值
+            sorce[key] = input[key];
+          }
+        }
+      }
+    }
+  }
+
+  var Vue = /*#__PURE__*/function () {
+    function Vue(options) {
+      _classCallCheck(this, Vue);
+
+      debugger;
+
+      if (options === null) {
+        return this;
+      }
+
+      this.$options = options;
+
+      this.__init();
+
+      if (this.$options.el) {
+        this.$el = document.querySelector(this.$options.el);
+        this._watcher = new _default$2(this.$mount.bind(this, this.$el), this);
+      } else {
+        // this.$mount()
+        this._watcher = new _default$2(this.$mount, this);
+      }
+    }
+
+    _createClass(Vue, [{
       key: "__init",
       value: function __init() {
         this.__initMixins();
 
-        this.__initState(); // 判断是否是根节点
+        this.__initListener();
+
+        __initLifecycle(this); // this.__beforeCreated()
 
 
-        if (this.$options.el) {
-          this.$el = document.querySelector(this.$options.el);
-          this.$mount(this.$el);
-        } else {
-          this.$mount();
-        } // new initListener()
-        // new InitLifeCycle()
-        // this.beforeCreated()
-        // new InitState()
-        // this.beforeCreated()
-        // if (el) {
-        //     // 是用来挂载的Root节点
-        //     this.$root = null
-        // }
-        // const componentRender = InitRender(render || template)
-        // this.beforeMount()
-        // if (created) {
-        //  }
-        // new Watcher(render.bind(this))
-        // return obs
+        this.__initState(); // this.__created()
+        // 判断是否是根节点
 
       }
     }, {
@@ -9723,7 +10142,7 @@
         var vm = this;
         var data = vm.$options.data;
         data = typeof data === 'function' ? data.call(vm) : data;
-        data = new _default$1(data);
+        data = new _default(data);
 
         var _iterator = _createForOfIteratorHelper(Object.getOwnPropertyNames(data)),
             _step;
@@ -9772,12 +10191,51 @@
       key: "__initMixins",
       value: function __initMixins() {
         lisfeCycleMixin(this);
+        mixinsComponent(this.$options);
+      }
+    }, {
+      key: "__initListener",
+      value: function __initListener() {
+        this.$on = new Map();
+        var vm = this;
+        var methods = vm.$options.methods;
+
+        if (methods) {
+          var _iterator2 = _createForOfIteratorHelper(Object.getOwnPropertyNames(methods)),
+              _step2;
+
+          try {
+            var _loop2 = function _loop2() {
+              var methodsKey = _step2.value;
+              Object.defineProperty(vm, methodsKey, {
+                get: function get() {
+                  return methods[methodsKey];
+                }
+              });
+            };
+
+            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+              _loop2();
+            }
+          } catch (err) {
+            _iterator2.e(err);
+          } finally {
+            _iterator2.f();
+          }
+        }
+      }
+    }], [{
+      key: "use",
+      value: function use(plugin, others) {
+        if (plugin.install) {
+          plugin.install(Vue, others);
+        }
       }
     }]);
 
-    return _default;
+    return Vue;
   }();
 
-  return _default;
+  return Vue;
 
 }));

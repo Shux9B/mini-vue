@@ -20,7 +20,7 @@
     - destoryed     √
 7. children         X
 8. Mixins           √
-9. Plugin           X
+9. Plugin           √
 
 ### 待解决问题
 1. 目前diff直接比较的真实DOM，应该比对虚拟DOM   

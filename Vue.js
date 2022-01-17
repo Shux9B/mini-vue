@@ -3,12 +3,22 @@ import Observer from "./libs/core/Observer.js";
 import { compile2Func } from './libs/VirtualDOM.js'
 import { mountComponent, lisfeCycleMixin, __initLifecycle } from "./libs/LifeCycle.js";
 import { mixinsComponent } from "./libs/Mixins.js";
-export default class {
+
+class Vue {
     constructor(options) {
-        const vm = this
+        debugger
+        if (options === null) {
+            return this
+        }
         this.$options = options
         this.__init()
-
+        if (this.$options.el) {
+            this.$el = document.querySelector(this.$options.el)
+            this._watcher = new Watcher(this.$mount.bind(this, this.$el), this)
+        } else {
+            // this.$mount()
+            this._watcher = new Watcher(this.$mount, this)
+        }
     }
     __init() {
         this.__initMixins()
@@ -18,13 +28,6 @@ export default class {
         this.__initState()
         // this.__created()
         // 判断是否是根节点
-        if (this.$options.el) {
-            this.$el = document.querySelector(this.$options.el)
-            this._watcher = new Watcher(this.$mount.bind(this, this.$el), this)
-        } else {
-            // this.$mount()
-            this._watcher = new Watcher(this.$mount, this)
-        }
     }
     __initState() {
         const vm = this
@@ -73,4 +76,10 @@ export default class {
             }
         }
     }
+    static use(plugin, others) {
+        if (plugin.install) {
+            plugin.install(Vue, others)
+        }
+    }
 }
+export default Vue
