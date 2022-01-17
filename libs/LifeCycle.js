@@ -1,4 +1,3 @@
-import Watcher from "./core/Watcher"
 import {compile2Func, createElement, createText} from './VirtualDOM'
 import { patch } from "./Patch"
 export function lisfeCycleMixin(Vue) {
@@ -75,6 +74,5 @@ export function __initLifecycle(vm) {
     if (vm.$options.beforeDestory) {
         vm.$beforeDestory = beforeDestory(vm.$options.beforeDestory)
     }
-    debugger
     mountElement(vm)
 }

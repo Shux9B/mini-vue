@@ -13,13 +13,13 @@
 4. Virtual DOM转换  √
 5. Dom diff         √
 6. event            √
-6. lifeCycle        X
+6. lifeCycle        √
     - beforeCreate  √
     - created       √
     - beforeDestory √
     - destoryed     √
 7. children         X
-8. Mixins           X
+8. Mixins           √
 9. Plugin           X
 
 ### 待解决问题

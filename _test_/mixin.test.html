@@ -1,0 +1,51 @@
+<html>
+
+<body>
+    <div id="app" key="app" style="widht:100px" class="hi">
+        <div>
+            <input type="button" @click="handleClick" value="点击加一"/>
+            <span>a: {{a}}</span>
+            <span>c: {{c}}</span>
+            <span>b: {{b}}</span>
+        </div>
+    </div>
+    <script src="../dist/Vue.js"></script>
+    <script>
+        const mixinsDemo1 = {
+            data() {
+                return {
+                    c: 1
+                }
+            },
+            methods: {
+                handleClick() {
+                    this.a = this.a + 1
+                }
+            },
+            updated() {
+                console.log('mixinsDemo1')
+            }
+        }
+        const mixinsDemo2 = {
+            data() {
+                return {
+                    b: ['z']
+                }
+            },
+            updated() {
+                console.log('mixinsDemo2')
+            }
+        }
+        var instance = new Vue({
+            el: "#app",
+            data: {
+                a: 1,
+                b: [1, 2, 3, 4, 5, 6]
+            },
+            mixins: [mixinsDemo1, mixinsDemo2]
+        })
+        console.log(instance)
+    </script>
+</body>
+
+</html>

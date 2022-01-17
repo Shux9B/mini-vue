@@ -113,7 +113,6 @@ function updateChildren(parent, oldChildren,newChildren) {
             oldEndNode = oldChildren[--oldEndIndex]
             newStartNode = newChildren[++newStartIndex]
         } else {
-            debugger
             // 都不一样,通过新的节点的key去找
             let toMoveNode = map[newStartNode.key]
             if (toMoveNode == null) {
@@ -142,7 +141,6 @@ function updateChildren(parent, oldChildren,newChildren) {
         }
     }
 }
-import { beforeMount,mounted,beforeDestoryed, destoryed } from "./LifeCycle"
 export function mountElement (vm) {
     // 调用target的beforeDestory
     // beforeMount(node)

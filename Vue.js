@@ -2,6 +2,7 @@ import Watcher from "./libs/core/Watcher.js";
 import Observer from "./libs/core/Observer.js";
 import { compile2Func } from './libs/VirtualDOM.js'
 import { mountComponent, lisfeCycleMixin, __initLifecycle } from "./libs/LifeCycle.js";
+import { mixinsComponent } from "./libs/Mixins.js";
 export default class {
     constructor(options) {
         const vm = this
@@ -56,6 +57,7 @@ export default class {
     }
     __initMixins() {
         lisfeCycleMixin(this)
+        mixinsComponent(this.$options)
     }
     __initListener() {
         this.$on = new Map()
