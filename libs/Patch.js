@@ -13,7 +13,7 @@ export function patch(oldVnode, vnode) {
     //     // diff算法
     // }
     // 
-    diffChildren(oldVnode, vnode)
+    diffChildren(oldVnode || new frameElement(), vnode)
     return oldVnode
     
 }
@@ -141,15 +141,21 @@ function updateChildren(parent, oldChildren,newChildren) {
         }
     }
 }
-export function mountElement (vm) {
-    // 调用target的beforeDestory
-    // beforeMount(node)
-    mountElement = function (parent, target, node) {
-        vm.$beforeDestory()
-        parent.insertBefore(target,node)
-        // mounted(node)
-        vm.$destoryed()
-    }
+// export function mountElement (vm) {
+//     // 调用target的beforeDestory
+//     // beforeMount(node)
+//     mountElement = function (parent, target, node) {
+//         vm.$beforeDestory && vm.$beforeDestory()
+//         parent.insertBefore(target,node)
+//         // mounted(node)
+//         vm.$destoryed && vm.$destoryed()
+//     }
+// }
+export function mountElement (parent, target, node) {
+    // vm.$beforeDestory && vm.$beforeDestory()
+    parent.insertBefore(target,node)
+    // mounted(node)
+    // vm.$destoryed && vm.$destoryed()
 }
 function isSameNode(oldNode, newNode) {
     return oldNode.key === newNode.key && oldNode.type === newNode.type

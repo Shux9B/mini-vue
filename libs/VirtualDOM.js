@@ -1,5 +1,6 @@
 import { textContent } from 'domutils';
 import { parseDocument } from 'htmlparser2'
+import {GlobalComponents} from './Componetns.js'
 const REGEX_VARIABLE = /\{\{[0-9a-zA-Z]*\}\}/g
 export function compile2Func(template, opts) {
     const doms = parseDocument(template);
@@ -35,7 +36,7 @@ function gen(node) {
     }
 }
 function genCode(node) {
-    return `_t('${node.name}', ${node.attribs ? JSON.stringify(node.attribs): '{}'}, [${node.children && genChildren(node)}])`
+    return `_t('${node.name}', ${node.attribs ? JSON.stringify(node.attribs) : '{}'}, [${node.children && genChildren(node)}])`
 }
 function genChildren(ast) {
     const children = ast.children || []
@@ -43,27 +44,36 @@ function genChildren(ast) {
 }
 const domAttrs = ['style', 'class', 'key', 'id', 'type', 'value', '@click']
 export function createElement(vm, tag, attrs, children) {
-    console.log(tag, attrs, children)
+    if (tag === 'button-counter') {
+        // 实际情况这里应该是排除所有已知的html标签
+        let child = new Vue(GlobalComponents[tag])
+        console.log(child.$el)
+        return child.$el
+    }
     let t = document.createElement(tag)
     domAttrs.forEach(key => {
         if (key.includes("@") && attrs[key]) {
             const handler = vm[attrs[key]].bind(vm)
             vm.$on.set(t, handler)
-            t.addEventListener(key.replace(/@/, ''),handler)
+            t.addEventListener(key.replace(/@/, ''), handler)
         } else {
             t[key] = attrs[key]
         }
     })
-    if (Array.isArray(children)) {
-        Array.from(children).forEach(ele => {
-            if (ele.nodeType) {
-                t.appendChild(ele)
-            } else {
-                t.appendChild(createText(null, ele))
-            }
-        })
+    if (children === void 0) {
+        return t
     } else {
-        t.appendChild(createText(null, children))
+        if (Array.isArray(children)) {
+            Array.from(children).forEach(ele => {
+                if (ele.nodeType) {
+                    t.appendChild(ele)
+                } else {
+                    t.appendChild(createText(null, ele))
+                }
+            })
+        } else {
+            t.appendChild(createText(null, children))
+        }
     }
     return t
 }

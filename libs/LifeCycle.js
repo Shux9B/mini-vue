@@ -19,7 +19,11 @@ export function lisfeCycleMixin(Vue) {
 export function mountComponent(vm, el) {
     const render = vm.$options.render
     let vnode = render.call(vm, vm._t)
-    vm.$el = patch(vm.$el, vnode)
+    if (!vm.$el) {
+        vm.$el = vnode
+    } else {
+        vm.$el = patch(vm.$el, vnode)
+    }
     // new Watcher()
 }
 export function beforeUpdate (fn) {
@@ -74,5 +78,4 @@ export function __initLifecycle(vm) {
     if (vm.$options.beforeDestory) {
         vm.$beforeDestory = beforeDestory(vm.$options.beforeDestory)
     }
-    mountElement(vm)
 }

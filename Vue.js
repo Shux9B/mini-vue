@@ -3,21 +3,21 @@ import Observer from "./libs/core/Observer.js";
 import { compile2Func } from './libs/VirtualDOM.js'
 import { mountComponent, lisfeCycleMixin, __initLifecycle } from "./libs/LifeCycle.js";
 import { mixinsComponent } from "./libs/Mixins.js";
-
+import {GlobalComponents} from './libs/Componetns'
 class Vue {
     constructor(options) {
-        debugger
         if (options === null) {
             return this
         }
+        debugger
         this.$options = options
         this.__init()
         if (this.$options.el) {
             this.$el = document.querySelector(this.$options.el)
-            this._watcher = new Watcher(this.$mount.bind(this, this.$el), this)
+            this._watcher = new Watcher(this.$mount.bind(this, this), this)
         } else {
             // this.$mount()
-            this._watcher = new Watcher(this.$mount, this)
+            this._watcher = new Watcher(this.$mount.bind(this, this), this)
         }
     }
     __init() {
@@ -26,6 +26,7 @@ class Vue {
         __initLifecycle(this)
         // this.__beforeCreated()
         this.__initState()
+        // this,__initChildren()
         // this.__created()
         // 判断是否是根节点
     }
@@ -46,17 +47,19 @@ class Vue {
         }
         // new Watcher(data)
     }
-    $mount(el) {
-        const vm = this
+    $mount(vm) {
         const opts = vm.$options
         if (!opts.render) {
             if (!opts.template) {
                 // 外部包裹el
-                opts.template = el.outerHTML
+                opts.template = vm.$el.outerHTML
             }
             opts.render = compile2Func(opts.template, opts)
         }
-        mountComponent(vm, el)
+        mountComponent(vm, vm.$el)
+    }
+    __initChildren () {
+        this.Children
     }
     __initMixins() {
         lisfeCycleMixin(this)
@@ -80,6 +83,9 @@ class Vue {
         if (plugin.install) {
             plugin.install(Vue, others)
         }
+    }
+    static component(componentName, options) {
+        GlobalComponents[componentName] = options
     }
 }
 export default Vue

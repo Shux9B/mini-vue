@@ -18,7 +18,7 @@
     - created       √
     - beforeDestory √
     - destoryed     √
-7. children         X
+7. children         √
 8. Mixins           √
 9. Plugin           √
 

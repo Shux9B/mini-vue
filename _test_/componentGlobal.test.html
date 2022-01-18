@@ -1,0 +1,33 @@
+<html>
+
+<body>
+    <div id="app"></div>
+    <script src="../dist/Vue.js"></script>
+    <script>
+        // 定义一个名为 button-counter 的新组件
+        Vue.component('button-counter', {
+            data: {
+                count: 0
+            },
+            methods: {
+                handleClick() {
+                    this.count++
+                }
+            },
+            template: '<div><a  @click="handleClick">You clicked me</a> <a>{{count}}</a> times.</div>'
+        })
+        var instance = new Vue({
+            el: "#app",
+            data: {
+                a: 1,
+                b: [1, 2, 3, 4, 5, 6]
+            },
+            template: `<div id="app"><span>{{a}}</span><button-counter></button-counter></div>`
+        })
+        setTimeout(function () {
+            instance.b = [1, 5, 4, 3, 2, 6]
+        }, 5000)
+    </script>
+</body>
+
+</html>
